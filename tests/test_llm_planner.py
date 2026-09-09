@@ -145,6 +145,12 @@ class TestLLMPlannerParsing:
         with pytest.raises(PlannerError, match="Google GenAI client is not configured"):
             planner.plan_next_action(state, [])
 
+    def test_default_model_is_gemini_3_8_flash(self):
+        """Verify the configured default Gemini model is gemini-3.8-flash."""
+        client = FakeGeminiClient()
+        planner = LLMPlanner(client=client)
+        assert planner.model_name == "gemini-3.8-flash"
+
 
 class TestPlannerContextIntegrity:
     def test_ground_truth_never_in_context(self):
