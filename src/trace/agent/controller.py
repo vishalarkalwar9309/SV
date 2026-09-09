@@ -117,6 +117,7 @@ class AgentController:
         if state.investigation_status in (
             InvestigationStatus.RESOLVED,
             InvestigationStatus.EXHAUSTED,
+            InvestigationStatus.BLOCKED,
         ):
             return None
 
