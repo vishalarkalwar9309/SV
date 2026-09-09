@@ -15,6 +15,15 @@ from typing import Any
 
 from pydantic import BaseModel
 
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+except ImportError:
+    pass
+
+DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
+
 
 class PlannerError(Exception):
     """Raised when the LLM planner fails or produces invalid action data."""
@@ -135,6 +144,17 @@ def build_planner_context(
     )
 
 
+def get_planned_action_schema() -> dict[str, Any]:
+    """Return JSON schema for PlannedAction compatible with Gemini Developer API.
+
+    Removes 'additionalProperties' which is forbidden in Gemini Developer API mode.
+    """
+    schema = PlannedAction.model_json_schema()
+    if "properties" in schema and "parameters" in schema["properties"]:
+        schema["properties"]["parameters"].pop("additionalProperties", None)
+    return schema
+
+
 class LLMPlanner(BasePlanner):
     """Real LLM-backed investigation planner using Google Gemini API.
 
@@ -145,11 +165,15 @@ class LLMPlanner(BasePlanner):
     def __init__(
         self,
         api_key: str | None = None,
-        model_name: str = "gemini-2.5-flash",
+        model_name: str | None = None,
         client: Any = None,
         system_instruction: str | None = None,
     ) -> None:
-        self.model_name = model_name
+        if model_name is not None:
+            self.model_name = model_name
+        else:
+            self.model_name = os.environ.get("GEMINI_MODEL") or DEFAULT_GEMINI_MODEL
+
         self.system_instruction = system_instruction or DEFAULT_SYSTEM_INSTRUCTION
 
         if client is not None:
@@ -185,12 +209,16 @@ class LLMPlanner(BasePlanner):
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
-                    response_schema=PlannedAction,
+                    response_schema=get_planned_action_schema(),
                     system_instruction=self.system_instruction,
                 ),
             )
         except Exception as e:
-            raise PlannerError(f"LLM generation failed: {e}") from e
+            err_msg = str(e)
+            env_key = os.environ.get("GOOGLE_API_KEY")
+            if env_key and env_key in err_msg:
+                err_msg = err_msg.replace(env_key, "[REDACTED]")
+            raise PlannerError(f"LLM generation failed: {err_msg}") from e
 
         return self._parse_response(response)
 

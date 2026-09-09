@@ -11,6 +11,7 @@ from trace.agent.controller import (
 )
 from trace.agent.investigation_loop import AutonomousInvestigationLoop
 from trace.agent.llm_planner import (
+    DEFAULT_GEMINI_MODEL,
     LLMPlanner,
     PlannerContext,
     PlannerError,
@@ -35,6 +36,7 @@ __all__ = [
     "BasePlanner",
     "ControllerError",
     "ControllerStepResult",
+    "DEFAULT_GEMINI_MODEL",
     "DuplicateToolError",
     "LLMPlanner",
     "MockPlanner",

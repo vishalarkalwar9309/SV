@@ -145,11 +145,49 @@ class TestLLMPlannerParsing:
         with pytest.raises(PlannerError, match="Google GenAI client is not configured"):
             planner.plan_next_action(state, [])
 
-    def test_default_model_is_gemini_2_5_flash(self):
+    def test_default_model_is_gemini_2_5_flash(self, monkeypatch):
         """Verify the configured default Gemini model is gemini-2.5-flash."""
+        monkeypatch.delenv("GEMINI_MODEL", raising=False)
         client = FakeGeminiClient()
         planner = LLMPlanner(client=client)
         assert planner.model_name == "gemini-2.5-flash"
+
+    def test_gemini_model_env_override(self, monkeypatch):
+        """Verify GEMINI_MODEL environment variable overrides the default model."""
+        monkeypatch.setenv("GEMINI_MODEL", "gemini-1.5-pro")
+        client = FakeGeminiClient()
+        planner = LLMPlanner(client=client)
+        assert planner.model_name == "gemini-1.5-pro"
+
+    def test_explicit_model_name_overrides_env(self, monkeypatch):
+        """Verify explicit model_name parameter overrides GEMINI_MODEL."""
+        monkeypatch.setenv("GEMINI_MODEL", "gemini-1.5-pro")
+        client = FakeGeminiClient()
+        planner = LLMPlanner(model_name="custom-model", client=client)
+        assert planner.model_name == "custom-model"
+
+    def test_secret_key_never_exposed_in_exception_or_context(self, monkeypatch):
+        """Verify secret API key is redacted and never exposed in exceptions or context."""
+        fake_secret = "AIzaSyFakeSecretKey9876543210"
+        monkeypatch.setenv("GOOGLE_API_KEY", fake_secret)
+
+        client = FakeGeminiClient(
+            response=Exception(f"Failed with key {fake_secret} at endpoint")
+        )
+        planner = LLMPlanner(client=client)
+        scenario = create_checkout_scenario()
+        state = InvestigationState(incident=scenario.incident)
+
+        with pytest.raises(PlannerError) as exc_info:
+            planner.plan_next_action(state, [])
+
+        err_text = str(exc_info.value)
+        assert fake_secret not in err_text
+        assert "[REDACTED]" in err_text
+
+        # Verify context never contains API key or secret
+        context = build_planner_context(state, [])
+        assert fake_secret not in context.model_dump_json()
 
 
 class TestPlannerContextIntegrity:
