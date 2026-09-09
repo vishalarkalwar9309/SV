@@ -1,0 +1,47 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Environment variables
+.env
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# pytest
+.pytest_cache/
+htmlcov/
+.coverage
+
+# mypy
+.mypy_cache/
+
+# ruff
+.ruff_cache/
+
+# OneDrive temp/conflict files
+~$*
+*.tmp
+desktop.ini
+
+# OS
+Thumbs.db
+.DS_Store
+
+# SQLite databases (keep schema, ignore runtime DBs)
+*.db
+*.sqlite3

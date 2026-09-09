@@ -1,0 +1,33 @@
+[project]
+name = "trace"
+version = "0.1.0"
+description = "TRACE 2.0 — Autonomous Technical Root-Cause & Resolution Engine"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.12",
+    "google-genai>=2.8",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+api = [
+    "fastapi>=0.121",
+    "uvicorn[standard]>=0.38",
+]
+dev = [
+    "pytest>=9.0",
+    "pytest-asyncio>=1.0",
+    "ruff>=0.11",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP"]
