@@ -9,6 +9,12 @@ from trace.agent.controller import (
     ControllerStepResult,
     StepLimitExceededError,
 )
+from trace.agent.llm_planner import (
+    LLMPlanner,
+    PlannerContext,
+    PlannerError,
+    build_planner_context,
+)
 from trace.agent.planner import (
     BasePlanner,
     MockPlanner,
@@ -28,10 +34,14 @@ __all__ = [
     "ControllerError",
     "ControllerStepResult",
     "DuplicateToolError",
+    "LLMPlanner",
     "MockPlanner",
     "PlannedAction",
+    "PlannerContext",
+    "PlannerError",
     "RegistryError",
     "StepLimitExceededError",
     "ToolNotFoundError",
     "ToolRegistry",
+    "build_planner_context",
 ]
