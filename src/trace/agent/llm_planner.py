@@ -145,7 +145,7 @@ class LLMPlanner(BasePlanner):
     def __init__(
         self,
         api_key: str | None = None,
-        model_name: str = "gemini-3.8-flash",
+        model_name: str = "gemini-2.5-flash",
         client: Any = None,
         system_instruction: str | None = None,
     ) -> None:
