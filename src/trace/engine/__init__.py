@@ -2,6 +2,13 @@
 
 from __future__ import annotations
 
+from trace.engine.evaluator import (
+    EvaluationRelationship,
+    EvaluationResult,
+    EvidenceEvaluator,
+    EvidenceWeight,
+    HypothesisEvaluationSummary,
+)
 from trace.engine.evidence_manager import (
     DuplicateEvidenceError,
     EvidenceError,
@@ -22,10 +29,15 @@ from trace.engine.state import InvestigationState, InvestigationStatus
 __all__ = [
     "DuplicateEvidenceError",
     "DuplicateHypothesisError",
+    "EvaluationRelationship",
+    "EvaluationResult",
     "EvidenceError",
+    "EvidenceEvaluator",
     "EvidenceManager",
     "EvidenceNotFoundError",
+    "EvidenceWeight",
     "HypothesisError",
+    "HypothesisEvaluationSummary",
     "HypothesisManager",
     "HypothesisNotFoundError",
     "InvalidEvidenceClassificationError",
