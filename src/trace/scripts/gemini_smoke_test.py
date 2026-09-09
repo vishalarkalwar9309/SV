@@ -46,7 +46,7 @@ def run_smoke_test() -> int:
         print("Real Gemini smoke test not executed because GOOGLE_API_KEY is not configured.")
         return 0
 
-    model_name = (os.environ.get("GEMINI_MODEL") or "gemini-2.5-flash").strip()
+    model_name = (os.environ.get("GEMINI_MODEL") or "gemini-3.6-flash").strip()
     print(f"[SMOKE TEST] Initializing LLMPlanner with model: {model_name}")
 
     try:
@@ -86,11 +86,9 @@ def run_smoke_test() -> int:
         print(f"[SMOKE TEST] FAILED: Response is not a PlannedAction: {type(action)}")
         return 1
 
-    registered_names = registry.list_tools()
-    if action.tool_name not in registered_names:
+    if not registry.has(action.tool_name):
         print(
-            f"[SMOKE TEST] FAILED: Tool '{action.tool_name}' is not in tools: "
-            f"{registered_names}"
+            f"[SMOKE TEST] FAILED: Tool '{action.tool_name}' is not registered."
         )
         return 1
 
