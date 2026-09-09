@@ -9,6 +9,7 @@ from trace.agent.controller import (
     ControllerStepResult,
     StepLimitExceededError,
 )
+from trace.agent.investigation_loop import AutonomousInvestigationLoop
 from trace.agent.llm_planner import (
     LLMPlanner,
     PlannerContext,
@@ -30,6 +31,7 @@ from trace.agent.registry import (
 __all__ = [
     "ActionValidationError",
     "AgentController",
+    "AutonomousInvestigationLoop",
     "BasePlanner",
     "ControllerError",
     "ControllerStepResult",
