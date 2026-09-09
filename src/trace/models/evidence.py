@@ -34,7 +34,10 @@ class EvidenceStore(BaseModel):
     items: list[EvidenceItem] = Field(default_factory=list)
 
     def add(self, item: EvidenceItem) -> None:
-        """Append a new evidence item."""
+        """Append a new evidence item. Prevents silent overwrites of existing IDs."""
+        for existing in self.items:
+            if existing.id == item.id:
+                raise ValueError(f"Evidence item with ID '{item.id}' already exists")
         self.items.append(item)
 
     def get(self, evidence_id: str) -> EvidenceItem | None:
@@ -43,6 +46,15 @@ class EvidenceStore(BaseModel):
             if item.id == evidence_id:
                 return item
         return None
+
+    def list_all(self) -> list[EvidenceItem]:
+        """Return all evidence items in append order."""
+        return list(self.items)
+
+    def get_by_ids(self, evidence_ids: list[str]) -> list[EvidenceItem]:
+        """Retrieve evidence items matching the given IDs."""
+        id_set = set(evidence_ids)
+        return [item for item in self.items if item.id in id_set]
 
     def get_by_tool(self, tool_name: str) -> list[EvidenceItem]:
         """Retrieve all evidence from a specific tool."""
