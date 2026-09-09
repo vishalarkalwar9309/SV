@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+from trace.engine.baseline import (
+    DeterministicBaselineResult,
+    run_deterministic_baseline,
+)
+from trace.engine.decision_trace import DecisionTraceStep
 from trace.engine.evaluator import (
     EvaluationRelationship,
     EvaluationResult,
@@ -27,6 +32,8 @@ from trace.engine.hypothesis_manager import (
 from trace.engine.state import InvestigationState, InvestigationStatus
 
 __all__ = [
+    "DecisionTraceStep",
+    "DeterministicBaselineResult",
     "DuplicateEvidenceError",
     "DuplicateHypothesisError",
     "EvaluationRelationship",
@@ -45,4 +52,5 @@ __all__ = [
     "InvestigationState",
     "InvestigationStatus",
     "VALID_TRANSITIONS",
+    "run_deterministic_baseline",
 ]

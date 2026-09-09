@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
+from trace.engine.decision_trace import DecisionTraceStep
 from trace.models.action import AgentAction
 from trace.models.evidence import EvidenceItem
 from trace.models.hypothesis import Hypothesis
@@ -34,6 +35,7 @@ class InvestigationState(BaseModel):
     actions_taken: list[AgentAction] = Field(default_factory=list)
     current_hypothesis_id: str | None = None
     investigation_status: InvestigationStatus = InvestigationStatus.NOT_STARTED
+    decision_trace: list[DecisionTraceStep] = Field(default_factory=list)
 
     @property
     def current_hypothesis(self) -> Hypothesis | None:
